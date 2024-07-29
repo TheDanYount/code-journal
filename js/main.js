@@ -1,5 +1,5 @@
 'use strict';
-/* global data*/
+/* global data */
 const $imgPreview = document.querySelector('.img-to-add');
 const originalSrc = '/images/placeholder-image-square.jpg';
 const $imgInput = document.querySelector('#photo');
