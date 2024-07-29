@@ -23,8 +23,9 @@ function submitHandler(event) {
     notes: elements.notes.value,
     entryId: data.nextEntryId,
   };
-  data.nextEntryId++;
   data.entries.unshift(newEntry);
+  data.nextEntryId++;
+  storeData();
   if (!$imgPreview) throw new Error('$imgPreview not found!');
   $imgPreview.setAttribute('src', originalSrc);
   $form.reset();

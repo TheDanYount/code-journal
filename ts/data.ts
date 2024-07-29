@@ -8,7 +8,7 @@ interface Data {
   nextEntryId: number;
 }
 
-const data: Data = {
+let data: Data = {
   view: 'entry-form',
   entries: [],
   editing: null,
@@ -32,3 +32,5 @@ function retrieveData(): Data {
   const retrievedData = JSON.parse(retrievedString);
   return retrievedData;
 }
+
+data = retrieveData();

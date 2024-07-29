@@ -1,7 +1,7 @@
 'use strict';
 /* exported data */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const data = {
+let data = {
   view: 'entry-form',
   entries: [],
   editing: null,
@@ -23,3 +23,4 @@ function retrieveData() {
   const retrievedData = JSON.parse(retrievedString);
   return retrievedData;
 }
+data = retrieveData();
