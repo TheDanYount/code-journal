@@ -20,12 +20,6 @@ input {
   height: 2rem;
 }
 
-textarea {
-  /* Used rather than full-column because the active
-  cursor position glitches when this is a flex item */
-  width: 100%;
-}
-
 .submit {
   margin: 0;
   border-top: rgb(104, 107, 107);
