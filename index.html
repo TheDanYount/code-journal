@@ -24,7 +24,16 @@
       </div>
     </header>
     <main class="container">
-      <div data-view="entry-form"></div>
+      <div data-view="entry-form">
+        <form>
+          <h2>New Entry</h2>
+          <img src="" />
+          <label for="title">Title<input id="title" name="title" /></label>
+          <label for="photo">Photo Url<input id="photo" name="photo" /></label>
+          <label for="notes">Notes<input id="notes" name="notes" /></label>
+          <input type="submit" />
+        </form>
+      </div>
       <div data-view="entries" class="hidden"></div>
     </main>
     <script src="js/data.js"></script>
