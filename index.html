@@ -16,32 +16,44 @@
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
-    <header>
+    <header class="white-on-purple">
       <div class="container">
         <div class="row">
-          <h1>Code Journal</h1>
+          <div class="column-full">
+            <h1>Code Journal</h1>
+          </div>
         </div>
       </div>
     </header>
     <main class="container">
       <div data-view="entry-form">
         <form>
-          <h2>New Entry</h2>
-          <div>
-            <img src="" />
+          <div class="column-full">
+            <h1>New Entry</h1>
           </div>
-          <div>
-            <label for="title">Title<input id="title" name="title" /></label>
+          <div class="row">
+            <div class="column-half">
+              <img
+                class="img-to-add"
+                src="/images/placeholder-image-square.jpg" />
+            </div>
+            <div class="column-half">
+              <label for="title"
+                >Title<input class="column-full" id="title" name="title"
+              /></label>
+              <label for="photo"
+                >Photo URL<input class="column-full" id="photo" name="photo"
+              /></label>
+            </div>
           </div>
-          <div>
-            <label for="photo"
-              >Photo Url<input id="photo" name="photo"
-            /></label>
+          <div class="column-full">
+            <label for="notes"
+              >Notes<textarea rows="5" id="notes" name="notes"> </textarea>
+            </label>
           </div>
-          <div>
-            <label for="notes">Notes<input id="notes" name="notes" /></label>
+          <div class="column-full row right">
+            <input class="submit white-on-purple" type="submit" value="SAVE" />
           </div>
-          <input type="submit" />
         </form>
       </div>
       <div data-view="entries" class="hidden"></div>
