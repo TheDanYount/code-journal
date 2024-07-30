@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -16,11 +16,59 @@
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
-    <header>
-      <div class="container"></div>
+    <header class="white-on-purple">
+      <div class="container">
+        <div class="row">
+          <div class="column-full">
+            <h1>Code Journal</h1>
+          </div>
+        </div>
+      </div>
     </header>
     <main class="container">
-      <div data-view="entry-form"></div>
+      <div data-view="entry-form">
+        <form>
+          <div class="column-full">
+            <h1>New Entry</h1>
+          </div>
+          <div class="row">
+            <div class="column-half">
+              <img
+                class="img-to-add"
+                src="/images/placeholder-image-square.jpg" />
+            </div>
+            <div class="column-half">
+              <label for="title"
+                >Title<input
+                  class="column-full input"
+                  id="title"
+                  name="title"
+                  required
+              /></label>
+              <label for="photo"
+                >Photo URL<input
+                  class="column-full input"
+                  id="photo"
+                  name="photo"
+                  required
+              /></label>
+            </div>
+          </div>
+          <div class="column-full">
+            <label for="notes"
+              >Notes<textarea
+                class="column-full input"
+                rows="5"
+                id="notes"
+                name="notes"
+                required></textarea>
+            </label>
+          </div>
+          <div class="column-full row right">
+            <input class="submit white-on-purple" type="submit" value="SAVE" />
+          </div>
+        </form>
+      </div>
       <div data-view="entries" class="hidden"></div>
     </main>
     <script src="js/data.js"></script>
