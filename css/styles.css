@@ -51,7 +51,21 @@ textarea:focus {
 .pseudo-button {
   height: 2rem;
   text-align: center;
-  line-height: calc(2rem - 4px);
+  line-height: 1.75rem;
   padding: 1px 6px;
-  font-size: calc(40px / 3);
+  font-size: 13px;
+}
+
+.img-to-add,
+.entry-img {
+  width: 100%;
+  object-fit: contain;
+}
+
+ul {
+  padding: 0;
+}
+
+li {
+  list-style-type: none;
 }

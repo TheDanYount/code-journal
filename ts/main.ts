@@ -55,13 +55,7 @@ function submitHandler(event: Event): void {
   $ulForEntries.prepend($liToAppend);
   viewSwap('entries');
   storeData(); // Is after viewSwap because viewSwap changes data.view
-  if (!$noEntries) throw new Error('$noEntries not found!');
-  if (
-    $ulForEntries.childNodes.length > 1 &&
-    !$noEntries.classList.contains('hidden')
-  ) {
-    toggleNoEntries();
-  }
+  toggleNoEntries();
   if (!$imgPreview) throw new Error('$imgPreview not found!');
   $imgPreview.setAttribute('src', originalSrc);
   $form.reset();
@@ -120,30 +114,28 @@ function generatePastEntries(): void {
     const $liToAppend = renderEntry(entry);
     $ulForEntries.appendChild($liToAppend);
   }
-  if (!$noEntries) throw new Error('$noEntries not found!');
-  if (
-    $ulForEntries.childNodes.length > 1 &&
-    !$noEntries.classList.contains('hidden')
-  )
-    toggleNoEntries();
+  toggleNoEntries();
   viewSwap(data.view);
 }
 
 function toggleNoEntries(): void {
   if (!$noEntries) throw new Error('$noEntries not found!');
-  $noEntries.classList.toggle('hidden');
+  if (!$ulForEntries) throw new Error('$ulForEntries not found!');
+  if (
+    $ulForEntries.childNodes.length > 1 &&
+    !$noEntries.classList.contains('hidden')
+  )
+    $noEntries.classList.toggle('hidden');
 }
 
 function viewSwap(newView: string): void {
   data.view = newView;
   for (const container of allViews) {
-    if (!container) throw new Error('container not found!');
+    if (!container) throw new Error('container (with a data-view) not found!');
     if (container.getAttribute('data-view') === newView) {
-      if (container.classList.contains('hidden')) {
-        container.classList.toggle('hidden');
-      }
-    } else if (!container.classList.contains('hidden')) {
-      container.classList.toggle('hidden');
+      container.classList.remove('hidden');
+    } else {
+      container.classList.add('hidden');
     }
   }
 }
@@ -154,8 +146,6 @@ $navBar.addEventListener('click', handleClick);
 function handleClick(event: Event): void {
   const eventTarget = event.target as HTMLElement;
   if (eventTarget.dataset.view) {
-    console.log(eventTarget);
-    console.log(typeof eventTarget.dataset.view);
     viewSwap(eventTarget.dataset.view);
   }
 }

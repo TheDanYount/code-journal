@@ -18,12 +18,6 @@
   width: 100%;
 }
 
-.img-to-add,
-.entry-img {
-  width: 100%;
-  object-fit: contain;
-}
-
 .right {
   justify-content: flex-end;
 }
@@ -31,14 +25,6 @@
 .white-on-purple {
   background-color: rgb(76, 38, 118);
   color: white;
-}
-
-ul {
-  padding: 0;
-}
-
-li {
-  list-style-type: none;
 }
 
 .centered-text {
