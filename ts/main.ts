@@ -1,6 +1,7 @@
 /* global data */
 const $imgPreview = document.querySelector('.img-to-add');
 const originalSrc = '/images/placeholder-image-square.jpg';
+const $titleInput = document.querySelector('#title');
 const $imgInput = document.querySelector('#photo');
 const $form = document.querySelector('form');
 
@@ -45,4 +46,26 @@ function submitHandler(event: Event): void {
   if (!$imgPreview) throw new Error('$imgPreview not found!');
   $imgPreview.setAttribute('src', originalSrc);
   $form.reset();
+  resetBgs();
+}
+
+if (!$titleInput) throw new Error('$titleInput not found!');
+$titleInput.addEventListener('input', handleChange);
+$imgInput.addEventListener('input', handleChange);
+
+function handleChange(event: Event): void {
+  const eventTarget = event.target as HTMLElement;
+  if (!eventTarget) throw new Error('change event target not found!');
+  eventTarget.setAttribute(
+    'class',
+    eventTarget.getAttribute('class') + ' value-changed',
+  );
+  console.log(eventTarget.getAttribute('class'));
+}
+
+function resetBgs(): void {
+  if (!$titleInput) throw new Error('$titleInput not found!');
+  if (!$imgInput) throw new Error('$titleInput not found!');
+  $titleInput.classList.remove('value-changed');
+  $imgInput.classList.remove('value-changed');
 }
