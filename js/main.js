@@ -5,6 +5,14 @@ const originalSrc = '/images/placeholder-image-square.jpg';
 const $titleInput = document.querySelector('#title');
 const $imgInput = document.querySelector('#photo');
 const $form = document.querySelector('form');
+const $ulForEntries = document.querySelector('#ul-for-entries');
+const $noEntries = document.querySelector('.no-entries');
+const $main = document.querySelector('main');
+if (!$main) throw new Error('$main not found!');
+const $entriesView = $main.querySelector('[data-view="entries"]');
+const $FormView = $main.querySelector('[data-view="entry-form"]');
+const allViews = [$entriesView, $FormView];
+const $navBar = document.querySelector('.nav-bar');
 if (!$imgInput) throw new Error('$imgInput not found!');
 $imgInput.addEventListener('input', previewPhoto);
 function previewPhoto(event) {
@@ -26,7 +34,18 @@ function submitHandler(event) {
   };
   data.entries.unshift(newEntry);
   data.nextEntryId++;
-  storeData();
+  const $liToAppend = renderEntry(data.entries[0]);
+  if (!$ulForEntries) throw new Error('$ulForEntries not found!');
+  $ulForEntries.prepend($liToAppend);
+  viewSwap('entries');
+  storeData(); //Is after viewSwap because viewSwap changes data.view
+  if (!$noEntries) throw new Error('$noEntries not found!');
+  if (
+    $ulForEntries.childNodes.length > 1 &&
+    !$noEntries.classList.contains('hidden')
+  ) {
+    toggleNoEntries();
+  }
   if (!$imgPreview) throw new Error('$imgPreview not found!');
   $imgPreview.setAttribute('src', originalSrc);
   $form.reset();
@@ -42,7 +61,6 @@ function handleChange(event) {
     'class',
     eventTarget.getAttribute('class') + ' value-changed',
   );
-  console.log(eventTarget.getAttribute('class'));
 }
 function resetBgs() {
   if (!$titleInput) throw new Error('$titleInput not found!');
@@ -51,12 +69,14 @@ function resetBgs() {
   $imgInput.classList.remove('value-changed');
 }
 function renderEntry(entry) {
+  const $li = document.createElement('li');
+  const $row = document.createElement('div');
+  $row.className = 'row';
+  $li.appendChild($row);
   const $entryImg = document.createElement('img');
   $entryImg.className = 'entry-img';
   const $entryH2 = document.createElement('h2');
   const $entryP = document.createElement('p');
-  const $row = document.createElement('div');
-  $row.className = 'row';
   const $columnHalf1 = document.createElement('div');
   $columnHalf1.className = 'column-half';
   $row.appendChild($columnHalf1);
@@ -69,6 +89,47 @@ function renderEntry(entry) {
   $columnHalf2.appendChild($entryH2);
   $entryP.textContent = entry.notes;
   $columnHalf2.appendChild($entryP);
-  return $row;
+  return $li;
 }
-renderEntry(data.entries[2]);
+document.addEventListener('DOMContentLoaded', generatePastEntries);
+function generatePastEntries() {
+  if (!$ulForEntries) throw new Error('$ulForEntries not found!');
+  for (const entry of data.entries) {
+    const $liToAppend = renderEntry(entry);
+    $ulForEntries.appendChild($liToAppend);
+  }
+  if (!$noEntries) throw new Error('$noEntries not found!');
+  if (
+    $ulForEntries.childNodes.length > 1 &&
+    !$noEntries.classList.contains('hidden')
+  )
+    toggleNoEntries();
+  viewSwap(data.view);
+}
+function toggleNoEntries() {
+  if (!$noEntries) throw new Error('$noEntries not found!');
+  $noEntries.classList.toggle('hidden');
+}
+function viewSwap(newView) {
+  data.view = newView;
+  for (const container of allViews) {
+    if (!container) throw new Error('container not found!');
+    if (container.getAttribute('data-view') === newView) {
+      if (container.classList.contains('hidden')) {
+        container.classList.toggle('hidden');
+      }
+    } else if (!container.classList.contains('hidden')) {
+      container.classList.toggle('hidden');
+    }
+  }
+}
+if (!$navBar) throw new Error('navBar not found!');
+$navBar.addEventListener('click', handleClick);
+function handleClick(event) {
+  const eventTarget = event.target;
+  if (eventTarget.dataset.view) {
+    console.log(eventTarget);
+    console.log(typeof eventTarget.dataset.view);
+    viewSwap(eventTarget.dataset.view);
+  }
+}

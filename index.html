@@ -20,7 +20,10 @@
       <div class="container">
         <div class="row">
           <div class="column-full">
-            <h1>Code Journal</h1>
+            <div class="row nav-bar">
+              <h1>Code Journal</h1>
+              <a data-view="entries">Entries</a>
+            </div>
           </div>
         </div>
       </div>
@@ -70,52 +73,13 @@
         </form>
       </div>
       <div data-view="entries" class="hidden">
-        <ul>
-          <li>
-            <div class="row">
-              <div class="column-half">
-                <img
-                  class="entry-img"
-                  src="https://media.nga.gov/iiif/d6f248cf-a24b-4053-9d2a-b22c2276836d/full/!588,600/0/default.jpg" />
-              </div>
-              <div class="column-half">
-                <h1>Harbor Festival</h1>
-                <p>
-                  Some text about a harbor festival. Maybe even some more text
-                  about a harbor festival. Maybe it was an exciting day. Maybe
-                  it was somewhat commonplace and adults saw it as either a day
-                  to sell their wares or a day to spend a bit of their savings,
-                  yet to children it would still be important. Maybe a young
-                  child heard stories of festival wonders from the older kids
-                  and longed for the day when he/she could experience it
-                  firsthand, and that child finally went to the festival. I need
-                  some more writing to test what happens when this entry is
-                  longer so here it is, and here's some more, and some more, and
-                  some more, and some more, and some more, and some more, and
-                  some more, and some more, and some more, and some more, and
-                  some more, and some more, and some more, and some more, and
-                  some more, and some more, and some more, and some more, and
-                  some more, and some more, and some more, and some more, and
-                  some more, and some more, and some more.
-                </p>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="row">
-              <div class="column-half">
-                <img
-                  class="entry-img"
-                  src="https://media.nga.gov/iiif/d6f248cf-a24b-4053-9d2a-b22c2276836d/full/!588,600/0/default.jpg" />
-              </div>
-              <div class="column-half">
-                <h1>Harbor Festival 2</h1>
-                <p>
-                  Can you stop the differences between the two images? I
-                  wouldn't try. They're actually the same image.
-                </p>
-              </div>
-            </div>
+        <div class="row space-between align-items-center">
+          <h1>Entries</h1>
+          <a class="submit white-on-purple pseudo-button submit">NEW</a>
+        </div>
+        <ul id="ul-for-entries">
+          <li class="centered-text no-entries">
+            No entries have been recorded.
           </li>
         </ul>
       </div>

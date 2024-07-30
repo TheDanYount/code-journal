@@ -41,6 +41,18 @@ li {
   list-style-type: none;
 }
 
+.centered-text {
+  text-align: center;
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
 @media screen and (width >= 768px) {
   .container {
     max-width: 900px;
