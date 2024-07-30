@@ -69,3 +69,27 @@ function resetBgs(): void {
   $titleInput.classList.remove('value-changed');
   $imgInput.classList.remove('value-changed');
 }
+
+function renderEntry(entry: Entry): HTMLElement {
+  const $entryImg = document.createElement('img');
+  $entryImg.className = 'entry-img';
+  const $entryH2 = document.createElement('h2');
+  const $entryP = document.createElement('p');
+  const $row = document.createElement('div');
+  $row.className = 'row';
+  const $columnHalf1 = document.createElement('div');
+  $columnHalf1.className = 'column-half';
+  $row.appendChild($columnHalf1);
+  const $columnHalf2 = document.createElement('div');
+  $columnHalf2.className = 'column-half';
+  $row.appendChild($columnHalf2);
+  $entryImg.setAttribute('src', entry.imgUrl);
+  $columnHalf1.appendChild($entryImg);
+  $entryH2.textContent = entry.title;
+  $columnHalf2.appendChild($entryH2);
+  $entryP.textContent = entry.notes;
+  $columnHalf2.appendChild($entryP);
+  return $row;
+}
+
+renderEntry(data.entries[2]);
