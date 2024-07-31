@@ -37,20 +37,20 @@
           <div class="row">
             <div class="column-half">
               <img
-                class="img-to-add"
+                class="img-to-add bor-rad-6"
                 src="/images/placeholder-image-square.jpg" />
             </div>
             <div class="column-half">
               <label for="title"
                 >Title<input
-                  class="column-full input"
+                  class="column-full input bor-rad-6"
                   id="title"
                   name="title"
                   required
               /></label>
               <label for="photo"
                 >Photo URL<input
-                  class="column-full input"
+                  class="column-full input bor-rad-6"
                   id="photo"
                   name="photo"
                   required
@@ -60,15 +60,19 @@
           <div class="column-full">
             <label for="notes"
               >Notes<textarea
-                class="column-full input"
+                class="column-full input bor-rad-6"
                 rows="5"
                 id="notes"
                 name="notes"
                 required></textarea>
             </label>
           </div>
-          <div class="column-full row right">
-            <input class="submit white-on-purple" type="submit" value="SAVE" />
+          <div id="submit-row" class="column-full row right align-items-center">
+            <a id="delete-button" class="hidden">Delete Entry</a>
+            <input
+              class="submit white-on-purple bor-rad-6"
+              type="submit"
+              value="SAVE" />
           </div>
         </form>
       </div>
@@ -76,7 +80,7 @@
         <div class="column-full">
           <div class="row space-between align-items-center">
             <h1>Entries</h1>
-            <a class="submit white-on-purple" id="new-button">NEW</a>
+            <a class="submit white-on-purple bor-rad-6" id="new-button">NEW</a>
           </div>
         </div>
         <ul id="ul-for-entries">
@@ -86,6 +90,13 @@
         </ul>
       </div>
     </main>
+    <dialog id="delete-confirm-dialog" class="bor-rad-6">
+      <p>Are you sure you want to delete this entry?</p>
+      <div class="row space-between">
+        <a id="delete-cancel" class="dialog-button bor-rad-6">CANCEL</a>
+        <a id="delete-confirm" class="dialog-button bor-rad-6">CONFIRM</a>
+      </div>
+    </dialog>
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>
   </body>

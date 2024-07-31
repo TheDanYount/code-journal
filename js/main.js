@@ -6,6 +6,8 @@ const $titleInput = document.querySelector('#title');
 const $imgInput = document.querySelector('#photo');
 const $notesInput = document.querySelector('#notes');
 const $form = document.querySelector('form');
+const $submitRow = document.querySelector('#submit-row');
+const $deleteButton = document.querySelector('#delete-button');
 const $ulForEntries = document.querySelector('#ul-for-entries');
 const $noEntries = document.querySelector('.no-entries');
 const $main = document.querySelector('main');
@@ -60,6 +62,11 @@ function submitHandler(event) {
     if (!$entryFormTitle) throw new Error('$entryFormTitle not found!');
     $entryFormTitle.textContent = 'New Entry';
     data.editing = null;
+    if (!$submitRow) throw new Error('$submitRow not found!');
+    $submitRow.classList.remove('space-between');
+    $submitRow.classList.add('right');
+    if (!$deleteButton) throw new Error('$deleteButton not found!');
+    $deleteButton.classList.add('hidden');
   }
   viewSwap('entries');
   storeData(); // This is after viewSwap because viewSwap changes data.view
@@ -93,7 +100,7 @@ function renderEntry(entry) {
   $columnHalf1.className = 'column-half';
   $row1.appendChild($columnHalf1);
   const $entryImg = document.createElement('img');
-  $entryImg.className = 'entry-img';
+  $entryImg.className = 'entry-img bor-rad-6';
   $entryImg.setAttribute('src', entry.imgUrl);
   $columnHalf1.appendChild($entryImg);
   const $columnHalf2 = document.createElement('div');
@@ -159,7 +166,6 @@ $ulForEntries.addEventListener('click', HandleUlClick);
 function HandleUlClick(event) {
   const eventTarget = event.target;
   if (eventTarget.matches('.fa-pencil')) {
-    viewSwap('entry-form');
     const match = data.entries.find(
       (v) => v.entryId === Number(eventTarget.dataset.entryId),
     );
@@ -175,5 +181,11 @@ function HandleUlClick(event) {
     $notesInput.value = currentEntry.notes;
     if (!$entryFormTitle) throw new Error('$entryFormTitle not found!');
     $entryFormTitle.textContent = 'Edit Entry';
+    if (!$submitRow) throw new Error('$submitRow not found!');
+    $submitRow.classList.remove('right');
+    $submitRow.classList.add('space-between');
+    if (!$deleteButton) throw new Error('$deleteButton not found!');
+    $deleteButton.classList.remove('hidden');
+    viewSwap('entry-form');
   }
 }

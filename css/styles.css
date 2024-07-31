@@ -1,11 +1,3 @@
-.img-to-add,
-.entry-img,
-#new-button,
-input,
-textarea {
-  border-radius: 6px;
-}
-
 label {
   border: 0;
 }
@@ -56,10 +48,37 @@ textarea:focus {
   font-size: 13px;
 }
 
+.dialog-button {
+  height: 2em;
+  text-align: center;
+  line-height: 2.2rem;
+  padding: 1px 6px;
+  font-size: 18px;
+}
+
 .img-to-add,
 .entry-img {
   width: 100%;
   object-fit: contain;
+}
+
+#delete-button {
+  color: red;
+  text-decoration: underline;
+  font-size: 12px;
+}
+
+#delete-confirm-dialog {
+  border: none;
+}
+
+#delete-cancel {
+  background-color: rgb(182, 182, 182);
+}
+
+#delete-confirm {
+  background-color: rgb(220, 38, 38);
+  color: white;
 }
 
 ul {
