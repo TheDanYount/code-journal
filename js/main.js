@@ -13,6 +13,7 @@ const $entriesView = $main.querySelector('[data-view="entries"]');
 const $FormView = $main.querySelector('[data-view="entry-form"]');
 const allViews = [$entriesView, $FormView];
 const $navBar = document.querySelector('.nav-bar');
+const $newButton = document.querySelector('#new-button');
 if (!$imgInput) throw new Error('$imgInput not found!');
 $imgInput.addEventListener('input', previewPhoto);
 function previewPhoto(event) {
@@ -123,3 +124,5 @@ function handleClick(event) {
     viewSwap(eventTarget.dataset.view);
   }
 }
+if (!$newButton) throw new Error('$newButton not found!');
+$newButton.addEventListener('click', () => viewSwap('entry-form'));

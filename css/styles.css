@@ -1,6 +1,6 @@
 .img-to-add,
 .entry-img,
-.pseudo-button,
+#new-button,
 input,
 textarea {
   border-radius: 6px;
@@ -48,7 +48,7 @@ textarea:focus {
   gap: 10px;
 }
 
-.pseudo-button {
+#new-button {
   height: 2rem;
   text-align: center;
   line-height: 1.75rem;

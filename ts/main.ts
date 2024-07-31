@@ -12,6 +12,7 @@ const $entriesView = $main.querySelector('[data-view="entries"]');
 const $FormView = $main.querySelector('[data-view="entry-form"]');
 const allViews = [$entriesView, $FormView];
 const $navBar = document.querySelector('.nav-bar');
+const $newButton = document.querySelector('#new-button');
 
 interface Entry {
   title: string;
@@ -149,3 +150,6 @@ function handleClick(event: Event): void {
     viewSwap(eventTarget.dataset.view);
   }
 }
+
+if (!$newButton) throw new Error('$newButton not found!');
+$newButton.addEventListener('click', () => viewSwap('entry-form'));
