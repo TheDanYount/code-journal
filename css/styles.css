@@ -1,4 +1,6 @@
 .img-to-add,
+.entry-img,
+#new-button,
 input,
 textarea {
   border-radius: 6px;
@@ -39,4 +41,31 @@ textarea:focus {
 
 .value-changed {
   background-color: rgb(231, 240, 254);
+}
+
+.nav-bar {
+  align-items: center;
+  gap: 10px;
+}
+
+#new-button {
+  height: 2rem;
+  text-align: center;
+  line-height: 1.75rem;
+  padding: 1px 6px;
+  font-size: 13px;
+}
+
+.img-to-add,
+.entry-img {
+  width: 100%;
+  object-fit: contain;
+}
+
+ul {
+  padding: 0;
+}
+
+li {
+  list-style-type: none;
 }
