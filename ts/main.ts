@@ -1,8 +1,9 @@
 /* global data */
 const $imgPreview = document.querySelector('.img-to-add');
 const originalSrc = '/images/placeholder-image-square.jpg';
-const $titleInput = document.querySelector('#title');
-const $imgInput = document.querySelector('#photo');
+const $titleInput = document.querySelector('#title') as HTMLInputElement;
+const $imgInput = document.querySelector('#photo') as HTMLInputElement;
+const $notesInput = document.querySelector('#notes') as HTMLTextAreaElement;
 const $form = document.querySelector('form');
 const $ulForEntries = document.querySelector('#ul-for-entries');
 const $noEntries = document.querySelector('.no-entries');
@@ -13,6 +14,7 @@ const $FormView = $main.querySelector('[data-view="entry-form"]');
 const allViews = [$entriesView, $FormView];
 const $navBar = document.querySelector('.nav-bar');
 const $newButton = document.querySelector('#new-button');
+const $entryFormTitle = document.querySelector('#entry-form-title');
 
 interface Entry {
   title: string;
@@ -36,12 +38,18 @@ function previewPhoto(event: Event): void {
   $imgPreview.setAttribute('src', eventTarget.value);
 }
 
+function previewPhotoByString(previewUrl: string): void {
+  if (!$imgPreview) throw new Error('$imgPreview not found!');
+  $imgPreview.setAttribute('src', previewUrl);
+}
+
 if (!$form) throw new Error('$form not found!');
 $form.addEventListener('submit', submitHandler);
 
 function submitHandler(event: Event): void {
   event.preventDefault();
   if (!$form) throw new Error('$form not found!');
+  if (!$ulForEntries) throw new Error('$ulForEntries not found!');
   const elements = $form.elements as JournalEntryPieces;
   const newEntry: Entry = {
     title: elements.title.value,
@@ -49,13 +57,29 @@ function submitHandler(event: Event): void {
     notes: elements.notes.value,
     entryId: data.nextEntryId,
   };
-  data.entries.unshift(newEntry);
-  data.nextEntryId++;
-  const $liToAppend = renderEntry(data.entries[0]);
-  if (!$ulForEntries) throw new Error('$ulForEntries not found!');
-  $ulForEntries.prepend($liToAppend);
+  if (data.editing === null) {
+    data.entries.unshift(newEntry);
+    data.nextEntryId++;
+    const $liToAppend = renderEntry(newEntry);
+    $ulForEntries.prepend($liToAppend);
+  } else {
+    newEntry.entryId = data.editing.entryId;
+    const currentEntryId = data.editing.entryId;
+    const indexOfEntriesToReplace = data.entries.findIndex(
+      (v) => v.entryId === currentEntryId,
+    );
+    data.entries[indexOfEntriesToReplace] = newEntry;
+    const $liToAppend = renderEntry(newEntry);
+    const queryString = '[data-entry-id="' + String(currentEntryId) + '"]';
+    const $liToReplace = $ulForEntries.querySelector(queryString);
+    if (!$liToReplace) throw new Error('$liToReplace not found!');
+    $liToReplace.replaceWith($liToAppend);
+    if (!$entryFormTitle) throw new Error('$entryFormTitle not found!');
+    $entryFormTitle.textContent = 'New Entry';
+    data.editing = null;
+  }
   viewSwap('entries');
-  storeData(); // Is after viewSwap because viewSwap changes data.view
+  storeData(); // This is after viewSwap because viewSwap changes data.view
   toggleNoEntries();
   if (!$imgPreview) throw new Error('$imgPreview not found!');
   $imgPreview.setAttribute('src', originalSrc);
@@ -70,10 +94,7 @@ $imgInput.addEventListener('input', handleChange);
 function handleChange(event: Event): void {
   const eventTarget = event.target as HTMLElement;
   if (!eventTarget) throw new Error('change event target not found!');
-  eventTarget.setAttribute(
-    'class',
-    eventTarget.getAttribute('class') + ' value-changed',
-  );
+  eventTarget.classList.add('value-changed');
 }
 
 function resetBgs(): void {
@@ -85,23 +106,31 @@ function resetBgs(): void {
 
 function renderEntry(entry: Entry): HTMLElement {
   const $li = document.createElement('li');
-  const $row = document.createElement('div');
-  $row.className = 'row';
-  $li.appendChild($row);
-  const $entryImg = document.createElement('img');
-  $entryImg.className = 'entry-img';
-  const $entryH2 = document.createElement('h2');
-  const $entryP = document.createElement('p');
+  $li.dataset.entryId = String(entry.entryId);
+  const $row1 = document.createElement('div');
+  $row1.className = 'row';
+  $li.appendChild($row1);
   const $columnHalf1 = document.createElement('div');
   $columnHalf1.className = 'column-half';
-  $row.appendChild($columnHalf1);
-  const $columnHalf2 = document.createElement('div');
-  $columnHalf2.className = 'column-half';
-  $row.appendChild($columnHalf2);
+  $row1.appendChild($columnHalf1);
+  const $entryImg = document.createElement('img');
+  $entryImg.className = 'entry-img';
   $entryImg.setAttribute('src', entry.imgUrl);
   $columnHalf1.appendChild($entryImg);
+  const $columnHalf2 = document.createElement('div');
+  $columnHalf2.className = 'column-half';
+  $row1.appendChild($columnHalf2);
+  const $row2 = document.createElement('div');
+  $row2.className = 'row space-between align-items-center';
+  $columnHalf2.appendChild($row2);
+  const $entryH2 = document.createElement('h2');
   $entryH2.textContent = entry.title;
-  $columnHalf2.appendChild($entryH2);
+  $row2.appendChild($entryH2);
+  const $pencil = document.createElement('i');
+  $pencil.className = 'fa-solid fa-pencil';
+  $pencil.dataset.entryId = String(entry.entryId);
+  $row2.appendChild($pencil);
+  const $entryP = document.createElement('p');
   $entryP.textContent = entry.notes;
   $columnHalf2.appendChild($entryP);
   return $li;
@@ -142,9 +171,9 @@ function viewSwap(newView: string): void {
 }
 
 if (!$navBar) throw new Error('navBar not found!');
-$navBar.addEventListener('click', handleClick);
+$navBar.addEventListener('click', handleNavBarClick);
 
-function handleClick(event: Event): void {
+function handleNavBarClick(event: Event): void {
   const eventTarget = event.target as HTMLElement;
   if (eventTarget.dataset.view) {
     viewSwap(eventTarget.dataset.view);
@@ -153,3 +182,28 @@ function handleClick(event: Event): void {
 
 if (!$newButton) throw new Error('$newButton not found!');
 $newButton.addEventListener('click', () => viewSwap('entry-form'));
+
+if (!$ulForEntries) throw new Error('$ulForEntries not found!');
+$ulForEntries.addEventListener('click', HandleUlClick);
+
+function HandleUlClick(event: Event): void {
+  const eventTarget = event.target as HTMLElement;
+  if (eventTarget.matches('.fa-pencil')) {
+    viewSwap('entry-form');
+    const match = data.entries.find(
+      (v) => v.entryId === Number(eventTarget.dataset.entryId),
+    );
+    if (!match) return;
+    data.editing = match;
+    const currentEntry = data.editing;
+    if (!$titleInput) throw new Error('$titleInput not found!');
+    $titleInput.value = currentEntry.title;
+    if (!$imgInput) throw new Error('$imgInput not found!');
+    $imgInput.value = currentEntry.imgUrl;
+    previewPhotoByString($imgInput.value);
+    if (!$notesInput) throw new Error('$notesInput not found!');
+    $notesInput.value = currentEntry.notes;
+    if (!$entryFormTitle) throw new Error('$entryFormTitle not found!');
+    $entryFormTitle.textContent = 'Edit Entry';
+  }
+}
