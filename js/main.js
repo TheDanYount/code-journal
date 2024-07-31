@@ -33,17 +33,41 @@ function submitHandler(event) {
   event.preventDefault();
   if (!$form) throw new Error('$form not found!');
   const elements = $form.elements;
-  const newEntry = {
-    title: elements.title.value,
-    imgUrl: elements.photo.value,
-    notes: elements.notes.value,
-    entryId: data.nextEntryId,
-  };
-  data.entries.unshift(newEntry);
-  data.nextEntryId++;
-  const $liToAppend = renderEntry(data.entries[0]);
-  if (!$ulForEntries) throw new Error('$ulForEntries not found!');
-  $ulForEntries.prepend($liToAppend);
+  let newEntry;
+  if (data.editing === null) {
+    newEntry = {
+      title: elements.title.value,
+      imgUrl: elements.photo.value,
+      notes: elements.notes.value,
+      entryId: data.nextEntryId,
+    };
+    data.entries.unshift(newEntry);
+    data.nextEntryId++;
+    const $liToAppend = renderEntry(newEntry);
+    if (!$ulForEntries) throw new Error('$ulForEntries not found!');
+    $ulForEntries.prepend($liToAppend);
+  } else {
+    newEntry = {
+      title: elements.title.value,
+      imgUrl: elements.photo.value,
+      notes: elements.notes.value,
+      entryId: data.editing.entryId,
+    };
+    const currentEntryId = data.editing.entryId;
+    const indexOfEntriesToReplace = data.entries.findIndex(
+      (v) => v.entryId === currentEntryId,
+    );
+    data.entries[indexOfEntriesToReplace] = newEntry;
+    const $liToAppend = renderEntry(newEntry);
+    if (!$ulForEntries) throw new Error('$ulForEntries not found!');
+    const queryString = '[data-entry-id="' + String(currentEntryId) + '"]';
+    const $liToReplace = $ulForEntries.querySelector(queryString);
+    if (!$liToReplace) throw new Error('$liToReplace not found!');
+    $liToReplace.replaceWith($liToAppend);
+    if (!$entryFormTitle) throw new Error('$entryFormTitle not found!');
+    $entryFormTitle.textContent = 'New Entry';
+    data.editing = null;
+  }
   viewSwap('entries');
   storeData(); // Is after viewSwap because viewSwap changes data.view
   toggleNoEntries();
@@ -68,6 +92,7 @@ function resetBgs() {
 }
 function renderEntry(entry) {
   const $li = document.createElement('li');
+  $li.dataset.entryId = String(entry.entryId);
   const $row1 = document.createElement('div');
   $row1.className = 'row';
   $li.appendChild($row1);
@@ -127,8 +152,8 @@ function viewSwap(newView) {
   }
 }
 if (!$navBar) throw new Error('navBar not found!');
-$navBar.addEventListener('click', handleClick);
-function handleClick(event) {
+$navBar.addEventListener('click', handleNavBarClick);
+function handleNavBarClick(event) {
   const eventTarget = event.target;
   if (eventTarget.dataset.view) {
     viewSwap(eventTarget.dataset.view);
@@ -137,8 +162,8 @@ function handleClick(event) {
 if (!$newButton) throw new Error('$newButton not found!');
 $newButton.addEventListener('click', () => viewSwap('entry-form'));
 if (!$ulForEntries) throw new Error('$ulForEntries not found!');
-$ulForEntries.addEventListener('click', ulClickHandler);
-function ulClickHandler(event) {
+$ulForEntries.addEventListener('click', HandleUlClick);
+function HandleUlClick(event) {
   const eventTarget = event.target;
   if (eventTarget.matches('.fa-pencil')) {
     viewSwap('entry-form');
