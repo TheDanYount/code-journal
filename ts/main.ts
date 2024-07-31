@@ -38,9 +38,9 @@ function previewPhoto(event: Event): void {
   $imgPreview.setAttribute('src', eventTarget.value);
 }
 
-function previewPhotoByString(event: string): void {
+function previewPhotoByString(previewUrl: string): void {
   if (!$imgPreview) throw new Error('$imgPreview not found!');
-  $imgPreview.setAttribute('src', event);
+  $imgPreview.setAttribute('src', previewUrl);
 }
 
 if (!$form) throw new Error('$form not found!');
@@ -49,34 +49,27 @@ $form.addEventListener('submit', submitHandler);
 function submitHandler(event: Event): void {
   event.preventDefault();
   if (!$form) throw new Error('$form not found!');
+  if (!$ulForEntries) throw new Error('$ulForEntries not found!');
   const elements = $form.elements as JournalEntryPieces;
-  let newEntry: Entry;
+  const newEntry: Entry = {
+    title: elements.title.value,
+    imgUrl: elements.photo.value,
+    notes: elements.notes.value,
+    entryId: data.nextEntryId,
+  };
   if (data.editing === null) {
-    newEntry = {
-      title: elements.title.value,
-      imgUrl: elements.photo.value,
-      notes: elements.notes.value,
-      entryId: data.nextEntryId,
-    };
     data.entries.unshift(newEntry);
     data.nextEntryId++;
     const $liToAppend = renderEntry(newEntry);
-    if (!$ulForEntries) throw new Error('$ulForEntries not found!');
     $ulForEntries.prepend($liToAppend);
   } else {
-    newEntry = {
-      title: elements.title.value,
-      imgUrl: elements.photo.value,
-      notes: elements.notes.value,
-      entryId: data.editing.entryId,
-    };
+    newEntry.entryId = data.editing.entryId;
     const currentEntryId = data.editing.entryId;
     const indexOfEntriesToReplace = data.entries.findIndex(
       (v) => v.entryId === currentEntryId,
     );
     data.entries[indexOfEntriesToReplace] = newEntry;
     const $liToAppend = renderEntry(newEntry);
-    if (!$ulForEntries) throw new Error('$ulForEntries not found!');
     const queryString = '[data-entry-id="' + String(currentEntryId) + '"]';
     const $liToReplace = $ulForEntries.querySelector(queryString);
     if (!$liToReplace) throw new Error('$liToReplace not found!');
@@ -86,7 +79,7 @@ function submitHandler(event: Event): void {
     data.editing = null;
   }
   viewSwap('entries');
-  storeData(); // Is after viewSwap because viewSwap changes data.view
+  storeData(); // This is after viewSwap because viewSwap changes data.view
   toggleNoEntries();
   if (!$imgPreview) throw new Error('$imgPreview not found!');
   $imgPreview.setAttribute('src', originalSrc);
@@ -200,18 +193,17 @@ function HandleUlClick(event: Event): void {
     const match = data.entries.find(
       (v) => v.entryId === Number(eventTarget.dataset.entryId),
     );
-    if (match) {
-      data.editing = match;
-      const currentEntry = data.editing;
-      if (!$titleInput) throw new Error('$titleInput not found!');
-      $titleInput.value = currentEntry.title;
-      if (!$imgInput) throw new Error('$imgInput not found!');
-      $imgInput.value = currentEntry.imgUrl;
-      previewPhotoByString($imgInput.value);
-      if (!$notesInput) throw new Error('$notesInput not found!');
-      $notesInput.value = currentEntry.notes;
-      if (!$entryFormTitle) throw new Error('$entryFormTitle not found!');
-      $entryFormTitle.textContent = 'Edit Entry';
-    }
+    if (!match) return;
+    data.editing = match;
+    const currentEntry = data.editing;
+    if (!$titleInput) throw new Error('$titleInput not found!');
+    $titleInput.value = currentEntry.title;
+    if (!$imgInput) throw new Error('$imgInput not found!');
+    $imgInput.value = currentEntry.imgUrl;
+    previewPhotoByString($imgInput.value);
+    if (!$notesInput) throw new Error('$notesInput not found!');
+    $notesInput.value = currentEntry.notes;
+    if (!$entryFormTitle) throw new Error('$entryFormTitle not found!');
+    $entryFormTitle.textContent = 'Edit Entry';
   }
 }
