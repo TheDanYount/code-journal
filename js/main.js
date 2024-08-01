@@ -6,6 +6,9 @@ const $titleInput = document.querySelector('#title');
 const $imgInput = document.querySelector('#photo');
 const $notesInput = document.querySelector('#notes');
 const $form = document.querySelector('form');
+const $submitRow = document.querySelector('#submit-row');
+const $deleteButton = document.querySelector('#delete-button');
+const $deleteConfirmDialog = document.querySelector('#delete-confirm-dialog');
 const $ulForEntries = document.querySelector('#ul-for-entries');
 const $noEntries = document.querySelector('.no-entries');
 const $main = document.querySelector('main');
@@ -60,14 +63,15 @@ function submitHandler(event) {
     if (!$entryFormTitle) throw new Error('$entryFormTitle not found!');
     $entryFormTitle.textContent = 'New Entry';
     data.editing = null;
+    if (!$submitRow) throw new Error('$submitRow not found!');
+    $submitRow.classList.remove('space-between');
+    $submitRow.classList.add('right');
+    if (!$deleteButton) throw new Error('$deleteButton not found!');
+    $deleteButton.classList.add('hidden');
   }
   viewSwap('entries');
   storeData(); // This is after viewSwap because viewSwap changes data.view
   toggleNoEntries();
-  if (!$imgPreview) throw new Error('$imgPreview not found!');
-  $imgPreview.setAttribute('src', originalSrc);
-  $form.reset();
-  resetBgs();
 }
 if (!$titleInput) throw new Error('$titleInput not found!');
 $titleInput.addEventListener('input', handleChange);
@@ -93,7 +97,7 @@ function renderEntry(entry) {
   $columnHalf1.className = 'column-half';
   $row1.appendChild($columnHalf1);
   const $entryImg = document.createElement('img');
-  $entryImg.className = 'entry-img';
+  $entryImg.className = 'entry-img bor-rad-6';
   $entryImg.setAttribute('src', entry.imgUrl);
   $columnHalf1.appendChild($entryImg);
   const $columnHalf2 = document.createElement('div');
@@ -126,12 +130,11 @@ function generatePastEntries() {
 }
 function toggleNoEntries() {
   if (!$noEntries) throw new Error('$noEntries not found!');
-  if (!$ulForEntries) throw new Error('$ulForEntries not found!');
-  if (
-    $ulForEntries.childNodes.length > 1 &&
-    !$noEntries.classList.contains('hidden')
-  )
-    $noEntries.classList.toggle('hidden');
+  if (data.entries.length > 0) {
+    $noEntries.classList.add('hidden');
+  } else {
+    $noEntries.classList.remove('hidden');
+  }
 }
 function viewSwap(newView) {
   data.view = newView;
@@ -142,6 +145,20 @@ function viewSwap(newView) {
     } else {
       container.classList.add('hidden');
     }
+  }
+  if (newView !== 'entry-form') {
+    if (!$form) throw new Error('$form not found!');
+    $form.reset();
+    resetBgs();
+    if (!$submitRow) throw new Error('$submitRow not found!');
+    $submitRow.classList.remove('space-between');
+    $submitRow.classList.add('right');
+    if (!$deleteButton) throw new Error('$deleteButton not found!');
+    $deleteButton.classList.add('hidden');
+    if (!$imgPreview) throw new Error('$imgPreview not found!');
+    $imgPreview.setAttribute('src', originalSrc);
+    if (!$entryFormTitle) throw new Error('$entryFormTitle not found!');
+    $entryFormTitle.textContent = 'New Entry';
   }
 }
 if (!$navBar) throw new Error('navBar not found!');
@@ -159,7 +176,6 @@ $ulForEntries.addEventListener('click', HandleUlClick);
 function HandleUlClick(event) {
   const eventTarget = event.target;
   if (eventTarget.matches('.fa-pencil')) {
-    viewSwap('entry-form');
     const match = data.entries.find(
       (v) => v.entryId === Number(eventTarget.dataset.entryId),
     );
@@ -175,5 +191,53 @@ function HandleUlClick(event) {
     $notesInput.value = currentEntry.notes;
     if (!$entryFormTitle) throw new Error('$entryFormTitle not found!');
     $entryFormTitle.textContent = 'Edit Entry';
+    if (!$submitRow) throw new Error('$submitRow not found!');
+    $submitRow.classList.remove('right');
+    $submitRow.classList.add('space-between');
+    if (!$deleteButton) throw new Error('$deleteButton not found!');
+    $deleteButton.classList.remove('hidden');
+    viewSwap('entry-form');
+  }
+}
+if (!$deleteButton) throw new Error('$deleteButton not found!');
+$deleteButton.addEventListener('click', handleDeleteButtonClick);
+function handleDeleteButtonClick() {
+  if (!$deleteConfirmDialog) throw new Error('$deleteConfirmDialog not found!');
+  $deleteConfirmDialog.showModal();
+}
+$deleteConfirmDialog.addEventListener('click', handleDeleteDialogClick);
+function handleDeleteDialogClick(event) {
+  const eventTarget = event.target;
+  if (!eventTarget) throw new Error('eventTarget for delete dialog not found!');
+  if (eventTarget.matches('#delete-cancel')) {
+    $deleteConfirmDialog.close();
+  } else if (eventTarget.matches('#delete-confirm')) {
+    if (!$ulForEntries) throw new Error('$ulForEntries not found!');
+    if (!$form) throw new Error('$form not found!');
+    if (!data.editing) throw new Error('data.editing not found!');
+    const currentEntryId = data.editing.entryId;
+    const matchIndex = data.entries.findIndex((v) => {
+      return v.entryId === currentEntryId;
+    });
+    if (matchIndex === -1) {
+      return;
+    }
+    data.entries.splice(matchIndex, 1);
+    data.editing = null;
+    /*Note that the following technically contains not only past entries,
+        but also the no entries message*/
+    const pastEntries = Array.from($ulForEntries.childNodes);
+    const $entryToDelete = pastEntries.find((v) => {
+      if (v.dataset && v.dataset.entryId) {
+        return Number(v.dataset.entryId) === currentEntryId;
+      }
+      return false;
+    });
+    if (!$entryToDelete) throw new Error('$entryToDelete not found!');
+    $entryToDelete.remove();
+    $deleteConfirmDialog.close();
+    viewSwap('entries');
+    storeData();
+    toggleNoEntries();
   }
 }

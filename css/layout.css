@@ -39,6 +39,10 @@
   align-items: center;
 }
 
+.bor-rad-6 {
+  border-radius: 6px;
+}
+
 @media screen and (width >= 768px) {
   .container {
     max-width: 900px;
